@@ -594,8 +594,8 @@ GameObject:
   - component: {fileID: 666191487}
   - component: {fileID: 666191486}
   - component: {fileID: 666191485}
-  - component: {fileID: 666191484}
   - component: {fileID: 666191482}
+  - component: {fileID: 666191484}
   - component: {fileID: 666191488}
   - component: {fileID: 666191489}
   - component: {fileID: 666191490}
@@ -618,7 +618,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2770ecffcc839d84eaaa201c54d1075e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  baseSpeed: 3
+  sprintSpeed: 6
+  currentSpeed: 0
+  sprintDuration: 3
   isSprint: 0
 --- !u!136 &666191484
 CapsuleCollider:
@@ -746,6 +749,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: c4aacabe-90b8-44ab-bc0d-c77faf12e436
     m_ActionName: Player/Attack[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7b5b17d5-8451-4581-a8df-b6cf45821ce7
+    m_ActionName: Player/Dodge[/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1160,7 +1167,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.16408779, y: -0.000000036591768, z: 0.0000000060867635, w: 0.9864458}
+  m_LocalRotation: {x: 0.16408779, y: -0.000000035912837, z: 0.000000005973829, w: 0.9864458}
   m_LocalPosition: {x: 0.46, y: 12.673924, z: -22.99236}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1496,7 +1503,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378715519}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14652415, y: -0.000000008510337, z: 0.0000000012605751, w: 0.9892071}
+  m_LocalRotation: {x: 0.14652415, y: 0.000000008510338, z: -0.0000000012605752, w: 0.9892071}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
