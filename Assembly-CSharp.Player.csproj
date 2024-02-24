@@ -60,9 +60,16 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.17f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Script\EmemiesHealth.cs" />
+    <Compile Include="Assets\Script\PowerUps\FireballFactory.cs" />
     <Compile Include="Assets\Script\PlayerControls.cs" />
     <Compile Include="Assets\Script\PlayerController.cs" />
+    <Compile Include="Assets\Script\PowerUps\PowerBoostPower.cs" />
+    <Compile Include="Assets\Script\PowerUps\PowerUpBehavior.cs" />
+    <Compile Include="Assets\Script\PowerUps\PowerUpFactory.cs" />
     <Compile Include="Assets\Script\VMovement.cs" />
+    <Compile Include="Assets\Script\PowerUps\SpeedBoostPower.cs" />
+    <Compile Include="Assets\Script\PowerUps\FireballPower.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -827,6 +834,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Unity.MemoryProfiler.Player.csproj">
+      <Project>{89DAA71B-A836-429A-B2F0-703487C44782}</Project>
+      <Name>Unity.MemoryProfiler.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.Navigation.Player.csproj">
+      <Project>{18291844-7C20-AF68-BCEE-542FE5BA35EA}</Project>
+      <Name>Unity.AI.Navigation.Player</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.Core.Player.csproj">
       <Project>{4E3D1AF4-A84F-C258-B444-1A2DAEBF46BB}</Project>
       <Name>Unity.VisualScripting.Core.Player</Name>

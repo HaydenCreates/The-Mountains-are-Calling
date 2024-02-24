@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EmemiesHealth : MonoBehaviour
+public class PowerBoostPower : MonoBehaviour
 {
-    public float baseHealth = 100.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,11 +14,5 @@ public class EmemiesHealth : MonoBehaviour
     void Update()
     {
         
-    }
-
-    //the enemies' health will go down when hit
-    public void TakeDamage(float damage)
-    {
-        baseHealth -= damage;
     }
 }

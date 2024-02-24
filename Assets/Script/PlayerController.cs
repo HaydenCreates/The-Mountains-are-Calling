@@ -8,8 +8,10 @@ public class PlayerController : MonoBehaviour
     private PlayerInput playerInput;
     private PlayerControls playerControl;
     private InputAction attackAction;
+    public PowerUpType PowerUp;
 
     public float baseDamage = 10f;
+    public float baseHealth = 100.0f;
 
     private void Awake()
     {
