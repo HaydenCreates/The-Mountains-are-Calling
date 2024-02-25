@@ -12,8 +12,16 @@ public class FireballPower : MonoBehaviour, IPowerUps
     public string PowerUp { get; set; }
     public GameObject GameObject { get { return this.gameObject; } }
     public float fireDamage = 20.0f;
-
     public int fireballNum = 3;
+
+    public PlayerController playerControl;
+
+    //allows for the playerController script to be initalized at the start of the game
+    void Start()
+    {
+        //the player controll script reference
+        playerControl = FindObjectOfType<PlayerController>();
+    }
 
     //how it will be created when it is called on at runtime
     public void Initialize()
@@ -46,22 +54,10 @@ public class FireballPower : MonoBehaviour, IPowerUps
     public void PlayerInteraction()
     {
         Debug.Log("Fireball used");
-        // Check for collisions with objects of the "Enemy" tag - need to change since this is not the main object just a spawner
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 1.0f); // You might need to adjust the radius
-        foreach (Collider hitCollider in hitColliders)
-        {
-            if (hitCollider.CompareTag("Enemy"))
-            {
-                // The collision occurred with an object having the specified tag
-                Debug.Log("Hit enemy with tag: " + hitCollider.tag);
 
-                // Add your custom logic here, e.g., deal damage to the enemy
-                EmemiesHealth enemyHealth = hitCollider.GetComponent<EmemiesHealth>();
-                if (enemyHealth != null)
-                {
-                    enemyHealth.TakeDamage(fireDamage);
-                }
-            }
-        }
+        //make the current power up in PlayerController == to fireball
+        playerControl.PowerUp = powerName;
+        playerControl.powerDamage = fireDamage;
+        playerControl.numOfPowerUp = fireballNum;
     }
 }

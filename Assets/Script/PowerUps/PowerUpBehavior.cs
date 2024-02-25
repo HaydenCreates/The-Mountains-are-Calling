@@ -88,32 +88,6 @@ public class PowerUpBehavior : MonoBehaviour
             return Vector3.zero;
         }
     }
-    /*
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Collision with player detected");
-
-            // Check if the player GameObject has the IPowerUps script
-            IPowerUps powerUp = other.GetComponent<IPowerUps>();
-
-            if (powerUp != null)
-            {
-                Debug.Log("Player grabbed powerUp");
-                powerUp.PlayerInteraction();
-                Destroy(gameObject); // or deactivate the power-up object
-            }
-            else
-            {
-                Debug.LogWarning("IPowerUps script not found on the player GameObject.");
-            }
-        }
-        else
-        {
-            Debug.Log("Collision with non-player object detected");
-        }
-    }
-    */
+  
 
 }

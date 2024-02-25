@@ -8,16 +8,36 @@ public class PlayerController : MonoBehaviour
     private PlayerInput playerInput;
     private PlayerControls playerControl;
     private InputAction attackAction;
-    public PowerUpType PowerUp;
+    private InputAction powerUpAction;
+    
+    // gets the type of powerUp when it's used
+    public string PowerUp;
+
+    //get the attributes of the powerUp
+    public float powerDamage;
+    public int numOfPowerUp;
+    public GameObject powerUpObj;
 
     public float baseDamage = 10f;
     public float baseHealth = 100.0f;
+
+    public FireballLauncher fireLaunch;
+
+    //allows for the playerController script to be initalized at the start of the game
+    void Start()
+    {
+        //the player controll script reference
+        fireLaunch = FindObjectOfType<FireballLauncher>();
+    }
 
     private void Awake()
     {
         playerControl = new PlayerControls();
         playerInput = GetComponent<PlayerInput>();
         attackAction = playerInput.actions["Attack"];
+        powerUpAction = playerInput.actions["PowerUpAttack"];
+        powerUpAction.performed += OnPowerUpUse;
+        powerUpAction.canceled += OnPowerUpUse;
         attackAction.performed += OnHit;
         attackAction.canceled += OnHit;
 
@@ -31,6 +51,7 @@ public class PlayerController : MonoBehaviour
             playerControl.Enable();
             playerInput = GetComponent<PlayerInput>();
             attackAction.performed += OnHit;
+            powerUpAction.performed += OnPowerUpUse;
 
         }
     }
@@ -41,7 +62,10 @@ public class PlayerController : MonoBehaviour
         {
             playerControl.Disable();
             attackAction.performed -= OnHit;
-            attackAction.canceled += OnHit;
+            attackAction.canceled -= OnHit;
+
+            powerUpAction.performed -= OnPowerUpUse;
+            powerUpAction.canceled -= OnPowerUpUse;
 
         }
     }
@@ -75,5 +99,63 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private void OnPowerUpUse(InputAction.CallbackContext context)
+    {
+        switch (PowerUp)
+        {
+            case "Fireball":
+                if (numOfPowerUp > 0)
+                {
+                    // Player has enough Fireball power-ups
+                    // Perform actions related to using Fireball power-up
+                    numOfPowerUp--;
 
+                    // Call a method or perform logic specific to the Fireball power-up
+                    fireLaunch.LaunchFireball();
+
+                    //add here to reference fireball game object and have collision?
+                    FireBallHit();
+                }
+                else
+                {
+                    // Player does not have enough Fireball power-ups
+                    // You can display a message or take alternative actions
+                    Debug.Log("Not enough Fireball power-ups!");
+                }
+                break;
+
+        }
+
+        if(numOfPowerUp == 0)
+        {
+            PowerUp = null;
+            powerDamage = 0;
+            numOfPowerUp = 0;
+        }
+    }
+
+
+    //hits the enemies and casues damage
+    private void FireBallHit()
+    {
+        // Check for collisions with objects of the "Enemy" tag
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 2.0f); // You might need to adjust the radius
+        foreach (Collider hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Enemy"))
+            {
+                // The collision occurred with an object having the specified tag
+                Debug.Log("Hit enemy with tag: " + hitCollider.tag);
+
+                // Add your custom logic here, e.g., deal damage to the enemy
+                EmemiesHealth enemyHealth = hitCollider.GetComponent<EmemiesHealth>();
+                if (enemyHealth != null)
+                {
+                    enemyHealth.TakeDamage(powerDamage);
+                }
+
+                Destroy(gameObject);
+            }
+        }
+    }
 }
