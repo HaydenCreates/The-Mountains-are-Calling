@@ -6,8 +6,19 @@ public class SpeedBoostPower : MonoBehaviour, IPowerUps
 {
     [SerializeField] private string powerName = "SpeedBoost";
     public string PowerUp { get; set; }
-    public GameObject GameObject { get; private set; }
+    public GameObject GameObject { get { return this.gameObject; } }
     public float boostSpeed = 12.0f;
+    public int speedBoostNum = 1;
+    
+    public VMovement vMove;
+    public PlayerController playerControl;
+
+    //allows for the playerController script to be initalized at the start of the game
+    void Start()
+    {
+        //the player controll script reference
+        playerControl = FindObjectOfType<PlayerController>();
+    }
 
     public void Initialize()
     {
@@ -16,8 +27,29 @@ public class SpeedBoostPower : MonoBehaviour, IPowerUps
         Debug.Log($"Activating {powerName} powerup!");
     }
 
+    //will initate the player interaction once the player hits it
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("Collision with player detected");
+
+            PlayerInteraction();
+            Destroy(gameObject);
+        }
+        else
+        {
+            Debug.Log("Collision with non-player object detected");
+        }
+    }
+
     public void PlayerInteraction()
     {
         Debug.Log("Speed used");
+
+        //make the current power up in PlayerController == to fireball
+        playerControl.PowerUp = powerName;
+        playerControl.powerDamage = boostSpeed;
+        playerControl.numOfPowerUp = speedBoostNum;
     }
 }

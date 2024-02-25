@@ -17,17 +17,20 @@ public class PlayerController : MonoBehaviour
     public float powerDamage;
     public int numOfPowerUp;
     public GameObject powerUpObj;
+    private bool isPowerUpActive;
 
     public float baseDamage = 10f;
     public float baseHealth = 100.0f;
 
     public FireballLauncher fireLaunch;
+    public VMovement vMove;
 
     //allows for the playerController script to be initalized at the start of the game
     void Start()
     {
         //the player controll script reference
         fireLaunch = FindObjectOfType<FireballLauncher>();
+        vMove = FindObjectOfType<VMovement>();
     }
 
     private void Awake()
@@ -114,13 +117,29 @@ public class PlayerController : MonoBehaviour
                     fireLaunch.LaunchFireball();
 
                     //add here to reference fireball game object and have collision?
-                    FireBallHit();
+                    //FireBallHit();
                 }
                 else
                 {
                     // Player does not have enough Fireball power-ups
-                    // You can display a message or take alternative actions
                     Debug.Log("Not enough Fireball power-ups!");
+                }
+                break;
+
+            case "SpeedBoost":
+                if (numOfPowerUp > 0)
+                {
+                    numOfPowerUp--;
+
+                    vMove.currentSpeed = powerDamage;
+
+                    // Start a coroutine to run the power-up effect for a specific duration
+                    StartCoroutine(DeactivatePowerUpAfterDuration(5f));
+                }
+                else
+                {
+                    // Player does not have enough Fireball power-ups
+                    Debug.Log("No more Speed Boosts");
                 }
                 break;
 
@@ -135,27 +154,23 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    //hits the enemies and casues damage
-    private void FireBallHit()
+    // Coroutine to deactivate the power-up after a duration
+    private IEnumerator DeactivatePowerUpAfterDuration(float duration)
     {
-        // Check for collisions with objects of the "Enemy" tag
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 2.0f); // You might need to adjust the radius
-        foreach (Collider hitCollider in hitColliders)
-        {
-            if (hitCollider.CompareTag("Enemy"))
-            {
-                // The collision occurred with an object having the specified tag
-                Debug.Log("Hit enemy with tag: " + hitCollider.tag);
+        isPowerUpActive = true;
 
-                // Add your custom logic here, e.g., deal damage to the enemy
-                EmemiesHealth enemyHealth = hitCollider.GetComponent<EmemiesHealth>();
-                if (enemyHealth != null)
-                {
-                    enemyHealth.TakeDamage(powerDamage);
-                }
+        // Wait for the specified duration
+        yield return new WaitForSeconds(duration);
 
-                Destroy(gameObject);
-            }
-        }
+        // Deactivate the power-up effect
+        DeactivatePowerUp();
+    }
+
+    // Method to deactivate the power-up effect
+    private void DeactivatePowerUp()
+    {
+        isPowerUpActive = false;
+        // Reset speed or perform any other necessary actions
+        vMove.currentSpeed = vMove.baseSpeed;
     }
 }

@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpeedBoostFactory : MonoBehaviour
+public class SpeedBoostFactory : PowerUpFactory
 {
-    // Start is called before the first frame update
-    void Start()
+    //reference to the Speedboost prefab
+    public SpeedBoostPower speedBoostPrefab;
+    public override IPowerUps CreatePowerUp(PowerUpType powerUp)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Debug.Log("Creating SpeedBoostPower");
+        SpeedBoostPower speedBoost = Instantiate(speedBoostPrefab);
+        // Optionally set position or perform additional configuration
+        InitializePowerUp(speedBoost);
+        return speedBoost;
     }
 }

@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 /*
  * Creates the interface/factory that will be used for the powerups and concrete factories
