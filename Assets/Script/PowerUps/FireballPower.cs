@@ -31,6 +31,7 @@ public class FireballPower : MonoBehaviour, IPowerUps
 
         // Unique logic for activating the powerup
         Debug.Log($"Activating {powerName} powerup!");
+        playerControl.powerUpSpawned = true;
 
     }
 

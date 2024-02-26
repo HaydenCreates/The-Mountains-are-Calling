@@ -5,7 +5,7 @@ using UnityEngine;
 public class FireballLauncher : MonoBehaviour
 {
     public GameObject fireballPrefab;
-    public float launchForce = 15f;
+    public float launchForce = 20f;
     public Transform firePoint;
     private GameObject fireball;
     private FireballPower fireballPow;

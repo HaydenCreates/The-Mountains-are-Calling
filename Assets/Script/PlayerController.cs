@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     public int numOfPowerUp;
     public GameObject powerUpObj;
     private bool isPowerUpActive;
+    public bool powerUpSpawned;
 
     public float baseDamage = 10f;
     public float baseHealth = 100.0f;
@@ -116,6 +117,7 @@ public class PlayerController : MonoBehaviour
                     // Call a method or perform logic specific to the Fireball power-up
                     fireLaunch.LaunchFireball();
 
+
                     //add here to reference fireball game object and have collision?
                     //FireBallHit();
                 }
@@ -143,6 +145,20 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
 
+            case "Health":
+                if (numOfPowerUp > 0)
+                {
+                    numOfPowerUp--;
+
+                    baseHealth += powerDamage;
+                }
+                else
+                {
+                    // Player does not have enough Fireball power-ups
+                    Debug.Log("No more Health");
+                }
+                break;
+
         }
 
         if(numOfPowerUp == 0)
@@ -150,6 +166,7 @@ public class PlayerController : MonoBehaviour
             PowerUp = null;
             powerDamage = 0;
             numOfPowerUp = 0;
+            powerUpSpawned = false;
         }
     }
 

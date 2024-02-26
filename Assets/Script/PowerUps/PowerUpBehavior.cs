@@ -11,53 +11,58 @@ public class PowerUpBehavior : MonoBehaviour
     public Transform spawnPoint;
     public GameObject floor;
     public int numberOfObjectsToSpawn = 5;
+    public int itemsSpawned = 0;
+    private bool isSpawning = false;
+
 
     private FireballFactory fireballFactory;
     private SpeedBoostFactory SpeedBoostFactory;
+    private HealthFactory healthFactory;
+
+    public PlayerController playerControl;
 
     void Start()
     {
         //instaniate the factory objects
         fireballFactory = FindObjectOfType<FireballFactory>();
         SpeedBoostFactory = FindObjectOfType<SpeedBoostFactory>();
+        healthFactory = FindObjectOfType<HealthFactory>();
+
+        playerControl = FindObjectOfType<PlayerController>();
 
         // Manually set up the powerUpFactories dictionary in the Unity Editor
         powerUpFactories = new Dictionary<PowerUpType, PowerUpFactory>
         {
             { PowerUpType.SpeedBoost, SpeedBoostFactory},
             { PowerUpType.Fireball, fireballFactory},
-            //{ PowerUpType.Type3, /* Assign the corresponding PowerUpFactory for Type3 */ },
+            { PowerUpType.Health, healthFactory },
             // Add more mappings as needed
         };
 
+        //SpawnPowerUp();
+    }
+
+    private void Update()
+    {
+        if (itemsSpawned < numberOfObjectsToSpawn && !isSpawning)
+        {
+            StartCoroutine(SpawnPowerUpWithDelay());
+        }
+    }
+    IEnumerator SpawnPowerUpWithDelay()
+    {
+        isSpawning = true;
+
+        // Introduce a delay before attempting to spawn the next power-up
+        yield return new WaitForSeconds(1.0f); // Adjust the delay time as needed
+
         SpawnPowerUp();
+
+        isSpawning = false;
     }
 
     void SpawnPowerUp()
     {
-
-        // Assuming you have an array or list of available power-up types
-        PowerUpType[] availablePowerUpTypes = { PowerUpType.Fireball, PowerUpType.SpeedBoost };
-
-        // Randomly select a power-up type
-        PowerUpType powerUpType = availablePowerUpTypes[Random.Range(0, availablePowerUpTypes.Length)];
-
-        Debug.Log(powerUpType);
-
-        if (powerUpFactories.TryGetValue(powerUpType, out PowerUpFactory selectedFactory))
-        {
-            Debug.Log(selectedFactory);
-            IPowerUps powerUp = selectedFactory.CreatePowerUp(powerUpType);
-            if (powerUp != null)
-            {
-                powerUp.Initialize();
-            }
-            else
-            {
-                Debug.LogError("Failed to create or initialize the power-up.");
-                return;
-            }
-
 
             //get the size of the floor 
             if (floor != null)
@@ -69,8 +74,6 @@ public class PowerUpBehavior : MonoBehaviour
                 {
                     // Get the size of the target GameObject
                     Vector3 size = rendererComponent.bounds.size;
-
-                    Debug.Log(size);
 
                 }
                 else
@@ -84,24 +87,56 @@ public class PowerUpBehavior : MonoBehaviour
             }
 
             //create and place a random powerup on the floor
-            if (floor != null && powerUp != null)
+            if (floor != null)
             {
-                for (int i = 0; i < numberOfObjectsToSpawn; i++)
+                if (playerControl.PowerUp == null||playerControl.PowerUp == "")
                 {
-                    // Generate a random spawn point within the bounds of the floor
-                    Vector3 randomSpawnPoint = GetRandomSpawnPoint(floor);
+                    if (playerControl.powerUpSpawned == false)
+                    {
+                        // Assuming you have an array or list of available power-up types
+                        PowerUpType[] availablePowerUpTypes = { PowerUpType.Fireball, PowerUpType.SpeedBoost, PowerUpType.Health };
 
-                    // Spawn the object at the random spawn point
-                    Instantiate(powerUp.GameObject, randomSpawnPoint, Quaternion.identity);
+                        // Randomly select a power-up type
+                        PowerUpType powerUpType = availablePowerUpTypes[Random.Range(0, availablePowerUpTypes.Length)];
+
+                        Debug.Log(powerUpType);
+
+                        if (powerUpFactories.TryGetValue(powerUpType, out PowerUpFactory selectedFactory))
+                        {
+                            Debug.Log(selectedFactory);
+                            IPowerUps powerUp = selectedFactory.CreatePowerUp(powerUpType);
+                            if (powerUp != null)
+                            {
+                                powerUp.Initialize();
+
+                                // Generate a random spawn point within the bounds of the floor
+                                Vector3 randomSpawnPoint = GetRandomSpawnPoint(floor);
+
+                                // Spawn the object at the random spawn point
+                                Instantiate(powerUp.GameObject, randomSpawnPoint, Quaternion.identity);
+                                itemsSpawned++;
+                                Debug.Log(itemsSpawned);
+                        }
+                            else
+                            {
+                                Debug.LogError("Failed to create or initialize the power-up.");
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Already Spawned Powerup");
+                    }
                 }
-            }
-            else
-            {
-                Debug.LogError("Please assign the floor and objectToSpawn in the Inspector.");
-            }
+                else
+                {
+                    Debug.Log("Already have Power Up");
+                }
 
-        }
+                
 
+            }
 
     }
 
@@ -126,5 +161,4 @@ public class PowerUpBehavior : MonoBehaviour
         }
     }
   
-
 }

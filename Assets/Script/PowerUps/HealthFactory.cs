@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthFactory : MonoBehaviour
+public class HealthFactory : PowerUpFactory
 {
-    // Start is called before the first frame update
-    void Start()
+    //reference to the Speedboost prefab
+    public HealthPower healthPowerPrefab;
+    public override IPowerUps CreatePowerUp(PowerUpType powerUp)
     {
-        
-    }
+        Debug.Log("Creating Health");
+        HealthPower healthPower = Instantiate(healthPowerPrefab);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Optionally set position or perform additional configuration
+        InitializePowerUp(healthPower);
+        return healthPower;
     }
 }

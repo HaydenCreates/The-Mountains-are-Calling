@@ -25,6 +25,7 @@ public class SpeedBoostPower : MonoBehaviour, IPowerUps
         PowerUp = powerName;
         // Unique logic for activating the powerup
         Debug.Log($"Activating {powerName} powerup!");
+        playerControl.powerUpSpawned = true;
     }
 
     //will initate the player interaction once the player hits it
