@@ -43,6 +43,7 @@ public class HealthPower : MonoBehaviour, IPowerUps
         }
     }
 
+    //sets up the power up attributes
     public void PlayerInteraction()
     {
         Debug.Log("Health used");

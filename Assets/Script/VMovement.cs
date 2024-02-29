@@ -6,8 +6,8 @@ using UnityEngine.InputSystem;
 public class VMovement : MonoBehaviour
 {
     private Rigidbody cube_RigidBody;
-    public float baseSpeed = 3.0f;
-    public float sprintSpeed = 6.0f;
+    public float baseSpeed = 5.0f;
+    public float sprintSpeed = 9.0f;
     public float currentSpeed;
     public Transform cameraTransform;
 

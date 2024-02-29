@@ -30,7 +30,6 @@ public class FireballLauncher : MonoBehaviour
 
         // Get the fire point position and rotation
         Vector3 launchPosition = new Vector3(playerPosition.x + 0.5f, playerPosition.y, playerPosition.z) ;
-        //Quaternion launchRotation = firePoint.rotation;
 
         // Instantiate the fireball at the fire point - think it's hitting the player
         fireball = Instantiate(fireballPrefab, launchPosition, Quaternion.identity);

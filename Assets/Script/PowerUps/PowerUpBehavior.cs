@@ -42,6 +42,7 @@ public class PowerUpBehavior : MonoBehaviour
         //SpawnPowerUp();
     }
 
+    //dynamically spawns the power ups
     private void Update()
     {
         if (itemsSpawned < numberOfObjectsToSpawn && !isSpawning)
@@ -49,6 +50,8 @@ public class PowerUpBehavior : MonoBehaviour
             StartCoroutine(SpawnPowerUpWithDelay());
         }
     }
+
+    //ensures that the spawner will only spawn one power up at a time
     IEnumerator SpawnPowerUpWithDelay()
     {
         isSpawning = true;
@@ -61,82 +64,82 @@ public class PowerUpBehavior : MonoBehaviour
         isSpawning = false;
     }
 
+    //spawns the power up randomly
     void SpawnPowerUp()
     {
 
-            //get the size of the floor 
-            if (floor != null)
+        //get the size of the floor 
+        if (floor != null)
+        {
+            // Assuming the target GameObject has a MeshRenderer or SpriteRenderer component
+            Renderer rendererComponent = floor.GetComponent<Renderer>();
+
+            if (rendererComponent != null)
             {
-                // Assuming the target GameObject has a MeshRenderer or SpriteRenderer component
-                Renderer rendererComponent = floor.GetComponent<Renderer>();
+                // Get the size of the target GameObject
+                Vector3 size = rendererComponent.bounds.size;
 
-                if (rendererComponent != null)
+            }
+            else
+            {
+                Debug.LogError("Renderer component not found on the target GameObject.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Target GameObject is not assigned. Please assign it in the Inspector.");
+        }
+
+        //create and place a random powerup on the floor
+        if (floor != null)
+        {
+            //error for hitting the button to spawn power up
+            if (playerControl.PowerUp == null||playerControl.PowerUp == "")
+            {
+                if (playerControl.powerUpSpawned == false)
                 {
-                    // Get the size of the target GameObject
-                    Vector3 size = rendererComponent.bounds.size;
+                    // Assuming you have an array or list of available power-up types
+                    PowerUpType[] availablePowerUpTypes = { PowerUpType.Fireball, PowerUpType.SpeedBoost, PowerUpType.Health };
 
+                    // Randomly select a power-up type
+                    PowerUpType powerUpType = availablePowerUpTypes[Random.Range(0, availablePowerUpTypes.Length)];
+                        
+                    //gets the power up randomly
+                    if (powerUpFactories.TryGetValue(powerUpType, out PowerUpFactory selectedFactory))
+                    {
+                        IPowerUps powerUp = selectedFactory.CreatePowerUp(powerUpType);
+                        if (powerUp != null)
+                        {
+                            powerUp.Initialize();
+
+                            // Generate a random spawn point within the bounds of the floor
+                            Vector3 randomSpawnPoint = GetRandomSpawnPoint(floor);
+
+                            // Spawn the object at the random spawn point
+                            Instantiate(powerUp.GameObject, randomSpawnPoint, Quaternion.identity);
+                            itemsSpawned++;
+                            Debug.Log(itemsSpawned);
+                    }
+                        else
+                        {
+                            Debug.LogError("Failed to create or initialize the power-up.");
+                            return;
+                        }
+                    }
                 }
                 else
                 {
-                    Debug.LogError("Renderer component not found on the target GameObject.");
+                    Debug.Log("Already Spawned Powerup");
                 }
             }
             else
             {
-                Debug.LogError("Target GameObject is not assigned. Please assign it in the Inspector.");
+                Debug.Log("Already have Power Up");
             }
-
-            //create and place a random powerup on the floor
-            if (floor != null)
-            {
-                if (playerControl.PowerUp == null||playerControl.PowerUp == "")
-                {
-                    if (playerControl.powerUpSpawned == false)
-                    {
-                        // Assuming you have an array or list of available power-up types
-                        PowerUpType[] availablePowerUpTypes = { PowerUpType.Fireball, PowerUpType.SpeedBoost, PowerUpType.Health };
-
-                        // Randomly select a power-up type
-                        PowerUpType powerUpType = availablePowerUpTypes[Random.Range(0, availablePowerUpTypes.Length)];
-
-                        Debug.Log(powerUpType);
-
-                        if (powerUpFactories.TryGetValue(powerUpType, out PowerUpFactory selectedFactory))
-                        {
-                            Debug.Log(selectedFactory);
-                            IPowerUps powerUp = selectedFactory.CreatePowerUp(powerUpType);
-                            if (powerUp != null)
-                            {
-                                powerUp.Initialize();
-
-                                // Generate a random spawn point within the bounds of the floor
-                                Vector3 randomSpawnPoint = GetRandomSpawnPoint(floor);
-
-                                // Spawn the object at the random spawn point
-                                Instantiate(powerUp.GameObject, randomSpawnPoint, Quaternion.identity);
-                                itemsSpawned++;
-                                Debug.Log(itemsSpawned);
-                        }
-                            else
-                            {
-                                Debug.LogError("Failed to create or initialize the power-up.");
-                                return;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("Already Spawned Powerup");
-                    }
-                }
-                else
-                {
-                    Debug.Log("Already have Power Up");
-                }
 
                 
 
-            }
+        }
 
     }
 

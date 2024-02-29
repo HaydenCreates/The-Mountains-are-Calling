@@ -7,7 +7,7 @@ public class SpeedBoostPower : MonoBehaviour, IPowerUps
     [SerializeField] private string powerName = "SpeedBoost";
     public string PowerUp { get; set; }
     public GameObject GameObject { get { return this.gameObject; } }
-    public float boostSpeed = 12.0f;
+    public float boostSpeed = 15.0f;
     public int speedBoostNum = 1;
     
     public VMovement vMove;
@@ -44,6 +44,7 @@ public class SpeedBoostPower : MonoBehaviour, IPowerUps
         }
     }
 
+    //sets up the power up attributes
     public void PlayerInteraction()
     {
         Debug.Log("Speed used");
