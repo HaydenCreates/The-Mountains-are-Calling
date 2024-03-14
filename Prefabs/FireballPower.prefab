@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 1629052797309025547}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.85, y: 3.06, z: -13}
+  m_LocalPosition: {x: 0.14704704, y: 1.3177843, z: 27.437252}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -50,7 +50,6 @@ MonoBehaviour:
   powerName: Fireball
   fireDamage: 20
   fireballNum: 3
-  playerControl: {fileID: 0}
 --- !u!33 &8080678428438780381
 MeshFilter:
   m_ObjectHideFlags: 0

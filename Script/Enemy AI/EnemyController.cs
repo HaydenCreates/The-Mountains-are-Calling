@@ -11,10 +11,11 @@ public class EnemyController : MonoBehaviour
 {
     public GameObject skeletonPrefab;
     public GameObject slimePrefab;
+    public GameObject sheepPrefab;
     private GameObject randomEnemy;
 
     //the min and max number of enemies, and the tracking of enemies
-    public int minEnemies = 0;
+    public int minEnemies = 1;
     public int maxEnemies = 10;
     public int numOfEnemiesInWave;
     public int currentEnemies;
@@ -68,9 +69,20 @@ public class EnemyController : MonoBehaviour
 
             //sets the spawn point to a random point in the nav mesh 
             Vector3 randomPos = RandomNavMeshPoint(30f);
-            while (randomPos == new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity))
+
+            //sets a max number of time to get a valid position
+            int maxTries = 0;
+            while (randomPos == new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity) ||
+                randomPos == new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity))
             {
+                maxTries--;
                 randomPos = RandomNavMeshPoint(30f);
+
+                if(maxTries == 0)
+                {
+                    randomPos = new Vector3(0, 0, 0);
+                    break;
+                }
             }
 
             randomEnemy.transform.position = new Vector3(randomPos.x,randomPos.y,randomPos.z);
@@ -91,7 +103,20 @@ public class EnemyController : MonoBehaviour
     public Enemy CreateEnemy()
     {
         GameObject enemyGO = null;
-        enemyGO = Instantiate(slimePrefab);
+
+        //gets a random value
+        int shortRangeEnemy = Random.Range(0, 2);
+
+        //if the value if 1 create a slime, else create a sheep
+        if (shortRangeEnemy == 1)
+        {
+            enemyGO = Instantiate(slimePrefab);
+        }
+        else
+        {
+            enemyGO = Instantiate(sheepPrefab);
+        }
+
         return enemyGO?.GetComponent<Enemy>();
 
     }

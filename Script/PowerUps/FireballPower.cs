@@ -14,13 +14,14 @@ public class FireballPower : MonoBehaviour, IPowerUps
     public float fireDamage = 20.0f;
     public int fireballNum = 3;
 
-    public PlayerController playerControl;
-
-    //allows for the playerController script to be initalized at the start of the game
-    void Start()
+    private PlayerController playerControlInstance;
+    public static FireballPower Instance;
+    
+    //gets an instance of the playerController
+    void Awake()
     {
-        //the player controll script reference
-        playerControl = FindObjectOfType<PlayerController>();
+        playerControlInstance = PlayerController.Instance;
+        Instance = this;
     }
 
     //how it will be created when it is called on at runtime
@@ -31,7 +32,7 @@ public class FireballPower : MonoBehaviour, IPowerUps
 
         // Unique logic for activating the powerup
         Debug.Log($"Activating {powerName} powerup!");
-        playerControl.powerUpSpawned = true;
+        playerControlInstance.powerUpSpawned = true;
 
     }
 
@@ -57,8 +58,8 @@ public class FireballPower : MonoBehaviour, IPowerUps
         Debug.Log("Fireball used");
 
         //make the current power up in PlayerController == to fireball
-        playerControl.PowerUp = powerName;
-        playerControl.powerDamage = fireDamage;
-        playerControl.numOfPowerUp = fireballNum;
+        playerControlInstance.PowerUp = powerName;
+        playerControlInstance.powerDamage = fireDamage;
+        playerControlInstance.numOfPowerUp = fireballNum;
     }
 }

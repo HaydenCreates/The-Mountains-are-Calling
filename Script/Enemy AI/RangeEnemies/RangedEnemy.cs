@@ -12,27 +12,23 @@ public class RangedEnemy : MonoBehaviour
     public ArrowLaunch arrowLaunch;
 
     public delegate void ShotDelayDelegate();
+    private PlayerController playerInstance;
 
     // Declare a field of the delegate type
     public ShotDelayDelegate shotDelayDelegate;
 
+    private void Awake()
+    {
+        playerInstance = PlayerController.Instance;
+    }
 
     void Start()
     {
         // Initialize the enemy with the PatrolState
         SetState(new RangedPatrolState());
+
+        playerTransform = playerInstance.gameObject.transform;
     }
-
-    private void FixedUpdate()
-    {
-        GameObject playerObject = GameObject.FindWithTag("Player");
-        if (playerObject != null)
-        {
-            playerTransform = playerObject.transform;
-        }
-
-    }
-
     //sets the current state to something 
     public void SetState(IEnemyStateRange state)
     {
@@ -61,6 +57,11 @@ public class RangedEnemy : MonoBehaviour
         return playerTransform;
     }
 
+    public Vector3 GetEnemyPosition()
+    {
+        return this.transform.position;
+    }
+
     //gets the NavMeshAgent of the enemy
     public UnityEngine.AI.NavMeshAgent GetNavMeshAgent()
     {
@@ -81,7 +82,7 @@ public class RangedEnemy : MonoBehaviour
 
         Debug.Log("Shooting Arrow");
         // After the delay, initiate shooting or other attack-related actions
-        arrowLaunch.LaunchArrow();
+        arrowLaunch.LaunchArrow(this);
     }
 
     public void InvokeShotDelay()
@@ -90,7 +91,7 @@ public class RangedEnemy : MonoBehaviour
         shotDelayDelegate?.Invoke();
     }
 
-
+    //should I remove?
     private void OnCollisionEnter(Collision collision)
     {
 

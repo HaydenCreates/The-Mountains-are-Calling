@@ -33,7 +33,6 @@ public class AttackState : MonoBehaviour, IEnemyState
 
         if (IsPlayerAttackable())
         {
-            Debug.Log("Attacking");
             navMeshAgent.SetDestination(playerPosition);
         }
         else

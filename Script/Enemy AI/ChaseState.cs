@@ -39,7 +39,6 @@ public class ChaseState : MonoBehaviour, IEnemyState
             MoveTowardsPlayer();
             if (IsPlayerAttackable())
             {
-                Debug.Log("Attacking State 1");
                 enemy.SetState(new AttackState());
             }
 
@@ -47,7 +46,6 @@ public class ChaseState : MonoBehaviour, IEnemyState
         // Check if the player is within attack range
         else if (IsPlayerAttackable())
         {
-            Debug.Log("Attacking State 2");
             enemy.SetState(new AttackState());
             return;
         }
@@ -104,9 +102,6 @@ public class ChaseState : MonoBehaviour, IEnemyState
     //if the player is in range it will change to true
     private bool IsPlayerDetected(Enemy enemy)
     {
-        float maxRaycastDistance = 20.0f;  // Adjust this value based on your needs
-        Debug.DrawRay(enemyTransform.position, enemyTransform.forward * maxRaycastDistance, Color.red);
-
         // Cast a ray towards the player
         Collider[] hitColliders = Physics.OverlapSphere(enemyTransform.position, followRange);
         foreach (var hitcollider in hitColliders)

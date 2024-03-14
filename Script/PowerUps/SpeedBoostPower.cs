@@ -14,10 +14,10 @@ public class SpeedBoostPower : MonoBehaviour, IPowerUps
     public PlayerController playerControl;
 
     //allows for the playerController script to be initalized at the start of the game
-    void Start()
+    void Awake()
     {
         //the player controll script reference
-        playerControl = FindObjectOfType<PlayerController>();
+        playerControl = PlayerController.Instance;
     }
 
     public void Initialize()

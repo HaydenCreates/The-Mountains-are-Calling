@@ -12,21 +12,19 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent navMeshAgent;
     private Transform playerTransform; // Reference to the player's transform
     public float attackDamage = 10.0f;
+    private PlayerController playerInstance;
+
+    private void Awake()
+    {
+        playerInstance = PlayerController.Instance;
+    }
 
     void Start()
     {
         // Initialize the enemy with the PatrolState
         SetState(new PatrolState());
-    }
 
-    private void FixedUpdate()
-    {
-        GameObject playerObject = GameObject.FindWithTag("Player");
-        if (playerObject != null)
-        {
-            playerTransform = playerObject.transform;
-        }
-        
+        playerTransform = playerInstance.gameObject.transform;
     }
 
     //sets the current state to something 

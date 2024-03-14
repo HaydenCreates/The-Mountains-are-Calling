@@ -5,19 +5,23 @@ using UnityEngine;
 public class FireballLauncher : MonoBehaviour
 {
     public GameObject fireballPrefab;
-    public float launchForce = 20f;
+    public float launchForce = 30f;
     public Transform firePoint;
     private GameObject fireball;
     private FireballPower fireballPow;
 
-    private void Start()
+    public static FireballLauncher Instance;
+    
+    private void Awake()
     {
         //the fireball script
-        fireballPow = FindObjectOfType<FireballPower>();
+        fireballPow = FireballPower.Instance;
+        Instance = this;
     }
 
     public void LaunchFireball()
     {
+        
         // Ensure there is a fire point assigned
         if (firePoint == null)
         {
@@ -25,11 +29,12 @@ public class FireballLauncher : MonoBehaviour
             return;
         }
         Vector3 cameraFace = Camera.main.transform.forward;
+        cameraFace.y = cameraFace.y + 0.15f;
 
         Vector3 playerPosition = firePoint.position;
 
         // Get the fire point position and rotation
-        Vector3 launchPosition = new Vector3(playerPosition.x + 0.5f, playerPosition.y, playerPosition.z) ;
+        Vector3 launchPosition = new Vector3(playerPosition.x, playerPosition.y, playerPosition.z + 0.5f) ;
 
         // Instantiate the fireball at the fire point - think it's hitting the player
         fireball = Instantiate(fireballPrefab, launchPosition, Quaternion.identity);

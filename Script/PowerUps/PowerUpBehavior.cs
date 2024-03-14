@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using TMPro;
 /*
  * This would be the spawner and such for the items
  */
@@ -12,14 +14,16 @@ public class PowerUpBehavior : MonoBehaviour
     public GameObject floor;
     public int numberOfObjectsToSpawn = 5;
     public int itemsSpawned = 0;
-    private bool isSpawning = false;
+    public bool isSpawning = false;
 
+    public TextMeshProUGUI spawnText;
 
     private FireballFactory fireballFactory;
     private SpeedBoostFactory SpeedBoostFactory;
     private HealthFactory healthFactory;
 
     public PlayerController playerControl;
+    public static PowerUpBehavior Instance;
 
     void Start()
     {
@@ -38,8 +42,11 @@ public class PowerUpBehavior : MonoBehaviour
             { PowerUpType.Health, healthFactory },
             // Add more mappings as needed
         };
+    }
 
-        //SpawnPowerUp();
+    private void Awake()
+    {
+        Instance = this;
     }
 
     //dynamically spawns the power ups
@@ -55,6 +62,8 @@ public class PowerUpBehavior : MonoBehaviour
     IEnumerator SpawnPowerUpWithDelay()
     {
         isSpawning = true;
+
+        Debug.Log("isSPawning is true");
 
         // Introduce a delay before attempting to spawn the next power-up
         yield return new WaitForSeconds(1.0f); // Adjust the delay time as needed
@@ -112,13 +121,19 @@ public class PowerUpBehavior : MonoBehaviour
                         {
                             powerUp.Initialize();
 
-                            // Generate a random spawn point within the bounds of the floor
-                            Vector3 randomSpawnPoint = GetRandomSpawnPoint(floor);
+                            //sets the spawn point to a random point in the nav mesh 
+                            Vector3 randomPos = RandomNavMeshPoint(35f);
+                            while (randomPos == new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity) ||
+                                randomPos == new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity))
+                            {
+                                randomPos = RandomNavMeshPoint(35f);
+                            }
 
                             // Spawn the object at the random spawn point
-                            Instantiate(powerUp.GameObject, randomSpawnPoint, Quaternion.identity);
+                            Instantiate(powerUp.GameObject, randomPos, Quaternion.identity);
                             itemsSpawned++;
-                            Debug.Log(itemsSpawned);
+
+                            StartCoroutine(showSpawnText());
                     }
                         else
                         {
@@ -143,25 +158,23 @@ public class PowerUpBehavior : MonoBehaviour
 
     }
 
-    //creates a random Vector3 position to place the powerups at
-    Vector3 GetRandomSpawnPoint(GameObject floor)
+    private IEnumerator showSpawnText()
     {
-        Renderer floorRenderer = floor.GetComponent<Renderer>();
+        spawnText.gameObject.SetActive(true);
+        spawnText.text = "Power-Up Spawned!";
 
-        if (floorRenderer != null)
-        {
-            Bounds bounds = floorRenderer.bounds;
+        yield return new WaitForSeconds(5.0f); // Adjust the delay time as needed
 
-            float randomX = Random.Range(bounds.min.x, bounds.max.x);
-            float randomZ = Random.Range(bounds.min.z, bounds.max.z);
-
-            return new Vector3(randomX, bounds.center.y + 0.5f, randomZ);
-        }
-        else
-        {
-            Debug.LogError("Renderer component not found on the floor GameObject.");
-            return Vector3.zero;
-        }
+        spawnText.gameObject.SetActive(false);
     }
-  
+
+    //creates a random Vector3 position to place the powerups at
+    Vector3 RandomNavMeshPoint(float radius)
+    {
+        // Generate a random point within the NavMesh bounds
+        Vector3 randomDirection = Random.insideUnitSphere * radius;
+        NavMesh.SamplePosition(randomDirection, out NavMeshHit navHit, radius, -1);
+        return navHit.position;
+    }
+
 }

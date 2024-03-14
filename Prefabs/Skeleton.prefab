@@ -100,8 +100,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77245f2f2b62de340ae163d3f055c01d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDamage: 10
-  arrowLaunch: {fileID: 0}
+  attackDamage: 0
+  arrowLaunch: {fileID: 4139778309021373578, guid: 122b4b819bbbd1240b7c08cc69c5b294, type: 3}
 --- !u!114 &8072464561463924618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,7 +138,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -183,5 +183,5 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.49999997
   m_Center: {x: 0, y: 0, z: 0}

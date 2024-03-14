@@ -14,12 +14,19 @@ public class RangedChaseState : MonoBehaviour, IEnemyStateRange
     public float attackRange = 20.0f; // Set the range within which the NPC will start to attack the player
     //public Rigidbody NPCBody;
     public float speed = 10.0f;
+    private PlayerController playerInstance;
+
+    private void Awake()
+    {
+        playerInstance = PlayerController.Instance;
+    }
+
 
     public void EnterState(RangedEnemy enemy)
     {
         // Logic for entering Chase state
         playerTransform = enemy.GetPlayerPosition();
-        playerPosition = playerTransform.position;
+
         //gets the reference form the enemy class - what is attached to the object
         enemyTransform = enemy.transform;
 
@@ -103,11 +110,8 @@ public class RangedChaseState : MonoBehaviour, IEnemyStateRange
     //if the player is in range it will change to true
     private bool IsPlayerDetected(RangedEnemy enemy)
     {
-        float maxRaycastDistance = 30.0f;  // Adjust this value based on your needs
-        Debug.DrawRay(enemyTransform.position, enemyTransform.forward * maxRaycastDistance, Color.red);
-
         // Cast a ray towards the player
-        Collider[] hitColliders = Physics.OverlapSphere(enemyTransform.position, followRange);
+        Collider[] hitColliders = Physics.OverlapSphere(enemy.transform.position, followRange);
         foreach (var hitcollider in hitColliders)
         {
             // Check if the ray hits the player's collider

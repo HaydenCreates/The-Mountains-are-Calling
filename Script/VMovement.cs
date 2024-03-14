@@ -21,6 +21,8 @@ public class VMovement : MonoBehaviour
     public bool isSprint;
     Vector3 movement;
 
+    public static VMovement Instance;
+
     //changes the speed of the player for a peroid of time after pressed
     private void OnSprint(InputAction.CallbackContext context)
     {
@@ -222,7 +224,7 @@ public class VMovement : MonoBehaviour
         playerInput.actions["Dodge"].started += OnDodge;
         playerInput.actions["Dodge"].canceled += OnDodge;
 
-
+        Instance = this;
     }
 
     void Start()

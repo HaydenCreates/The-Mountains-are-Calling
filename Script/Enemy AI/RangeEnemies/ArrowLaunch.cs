@@ -6,44 +6,31 @@ public class ArrowLaunch : MonoBehaviour
 {
     public GameObject arrowPrefab;
     public float launchForce = 10f;
-    public Transform firePoint;
     private GameObject arrow;
 
-    public float arrowDamage = 20;
-    private GameObject player;
+    public float arrowDamage = 5;
+    public Transform firePoint;
     private Vector3 launchDirection;
     private Transform playerPos;
 
-    private void Start()
-    {
-        player = GameObject.FindWithTag("Player");
-        if (player != null)
-        {
-            playerPos = player.transform;
-        }
-    }
+    private RangedEnemy rangedEnemyInstance;
+    
 
-
-    public void LaunchArrow()
+    public void LaunchArrow(RangedEnemy enemy)
     {
         // Ensure there is a fire point assigned
-        if (firePoint == null)
-        {
-            Debug.LogError("Fire point not assigned to Skeleton!");
-            return;
-        }
+        playerPos = enemy.GetPlayerPosition();
 
-        Vector3 enemyPosition = firePoint.position;
+        Vector3 enemyPosition = enemy.GetEnemyPosition();
 
         // Get the fire point position and rotation
-        Vector3 launchPosition = new Vector3(enemyPosition.x + 1f, enemyPosition.y + 1f, enemyPosition.z);
-
-        // Calculate the direction from the launch point to the player's position
-        launchDirection = (playerPos.position - launchPosition).normalized;
-        launchDirection.y = launchDirection.y + 0.15f;
-
+        Vector3 launchPosition = new Vector3(enemyPosition.x + 1f, enemyPosition.y + 0.7f, enemyPosition.z);
         // Instantiate the fireball at the fire point - think it's hitting the player
         arrow = Instantiate(arrowPrefab, launchPosition, Quaternion.identity);
+
+        // Calculate the direction from the launch point to the player's position
+        launchDirection = (playerPos.position - enemyPosition).normalized;
+        launchDirection.y = launchDirection.y + 0.15f;
 
         // Apply force to the fireball to make it move in the aiming direction
         Rigidbody arrowRb = arrow.GetComponent<Rigidbody>();

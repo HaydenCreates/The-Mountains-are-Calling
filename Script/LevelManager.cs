@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -8,10 +9,18 @@ public class LevelManager : MonoBehaviour
     public int currentWave = 1;
 
     private EnemyController enemyControllerInstance;
+    private PlayerController playerControllerInstance;
+    public static LevelManager Instance;
 
     private void Start()
     {
         enemyControllerInstance = EnemyController.Instance;
+        playerControllerInstance = PlayerController.Instance;
+    }
+
+    private void Awake()
+    {
+        Instance = this;
     }
 
     // Update is called once per frame
@@ -36,7 +45,8 @@ public class LevelManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Player Wins");
+                DontDestroyOnLoad(playerControllerInstance.gameObject);
+                SceneManager.LoadScene("Win Screen");
             }
         }
     }
