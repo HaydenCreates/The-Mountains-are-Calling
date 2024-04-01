@@ -7,20 +7,29 @@ using UnityEngine.SceneManagement;
 
 public class LevelSelectScript : MonoBehaviour
 {
-    [SerializeField] private Button LevelButton;
+    //make it the array?
+    [SerializeField] private Button Level1Button;
     [SerializeField] private Button ReturnButton;
+    [SerializeField] private Button Level2Button;
 
     // Start is called before the first frame update
-    public void OnLevelSelect()
+    public void OnLevel1Select()
     {
         // Load the game scene
         SceneManager.LoadScene("Demo Level");
     }
+
+    public void OnLevel2Select()
+    {
+        // Load the game scene
+        SceneManager.LoadScene("Level 2");
+    }
+
 
     public void OnReturnTitle()
     {
         SceneManager.LoadScene("MainMenu");
     }
 
-    
+
 }
