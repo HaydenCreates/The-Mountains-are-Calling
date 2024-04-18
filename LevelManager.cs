@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -8,11 +9,16 @@ public class LevelManager : MonoBehaviour
     public int currentWave = 1;
 
     private EnemyController enemyControllerInstance;
+    private PlayerController playerControllerInstance;
     public static LevelManager Instance;
+    public LevelGameManager levelGameInsatnce;
+    public DatabaseManager database;
 
     private void Start()
     {
         enemyControllerInstance = EnemyController.Instance;
+        playerControllerInstance = PlayerController.Instance;
+        database = DatabaseManager.Instance;
     }
 
     private void Awake()
@@ -42,7 +48,21 @@ public class LevelManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Player Wins");
+                DontDestroyOnLoad(playerControllerInstance.gameObject);
+                string currentLevelName = levelGameInsatnce.GetCurrentLevelData().levelName;
+
+                //get the level object and change it's value to true
+                bool status = levelGameInsatnce.isNextLevelCompleted(currentLevelName);
+                //check if the level has been completed before 
+                if (!status)
+                {
+                    levelGameInsatnce.updateCollect();
+                    levelGameInsatnce.MarkLevelCompleted(currentLevelName);
+                    database.SaveDataFn();
+                    Debug.Log("Add Collectable");
+                }
+
+                SceneManager.LoadScene("Win Screen");
             }
         }
     }

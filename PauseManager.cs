@@ -2,12 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PauseManager : MonoBehaviour
 {
     private PlayerInput playerInput;
     private PlayerControls playerControl;
     private InputAction PauseAction;
+    public GameObject canvas;
+
+    public GameObject pauseScreen;
+    public GameObject TutorialScreen;
+    [SerializeField] private Button TutorialButton;
+    [SerializeField] private Button PausedReturnButton;
 
     public static bool isPaused = false;
 
@@ -20,6 +28,10 @@ public class PauseManager : MonoBehaviour
 
         PauseAction.performed += pauseGame;
         PauseAction.canceled += pauseGame;
+
+        pauseScreen.SetActive(false);
+        TutorialScreen.SetActive(false);
+        Time.timeScale = 1;
 
     }
 
@@ -56,7 +68,7 @@ public class PauseManager : MonoBehaviour
             if (!isPaused)
             {
                 Time.timeScale = 1;
-                Debug.Log("Paused Screen");
+                pauseScreen.SetActive(false);
 
                 //AudioListener.pause = true; - pauses audio
                 //AudioSource.ignoreListenerPause=true; - keeps the sound going
@@ -64,7 +76,26 @@ public class PauseManager : MonoBehaviour
             else
             {
                 Time.timeScale = 0;
+                pauseScreen.SetActive(true);
             }
         }
+    }
+
+    public void OnTutorial()
+    {
+        TutorialScreen.SetActive(true);
+        pauseScreen.SetActive(false);
+    }
+
+    public void ReturnTutorial()
+    {
+        TutorialScreen.SetActive(false);
+        pauseScreen.SetActive(true);
+    }
+
+    public void OnReturnTitle()
+    {
+        isPaused = false;
+        SceneManager.LoadScene("MainMenu");
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -31,13 +32,15 @@ public class PlayerController : MonoBehaviour
     public VMovement vMove;
 
     public static PlayerController Instance;
+    private Renderer playerRenderer;
+    public Material hitMaterial;
+    public Material originalMaterial;
+    public Material strongHitMaterial;
 
     //allows for the playerController script to be initalized at the start of the game
     void Start()
     {
-        //the player controll script reference
-        fireLaunch = FindObjectOfType<FireballLauncher>();
-        vMove = FindObjectOfType<VMovement>();
+        playerRenderer = GetComponent<Renderer>();
     }
 
     private void Update()
@@ -65,6 +68,10 @@ public class PlayerController : MonoBehaviour
         strongAttackAction.performed += OnStrongHit;
         strongAttackAction.canceled += OnStrongHit;
 
+
+        //the player controll script reference
+        fireLaunch = FireballLauncher.Instance;
+        vMove = VMovement.Instance;
         Instance = this;
     }
 
@@ -106,12 +113,14 @@ public class PlayerController : MonoBehaviour
     {
         if (context.performed)
         {
+            // Clear the array at the beginning
+            Collider[] hitColliders = new Collider[0];
             // Perform the attack logic here
             Debug.Log("Attacking!");
 
             // Check for collisions with objects of the "Enemy" tag - does it based on general vinity
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 2.0f);
-            foreach (Collider hitCollider in hitColliders)
+            hitColliders = Physics.OverlapSphere(transform.position, 2.0f);
+            foreach (var hitCollider in hitColliders)
             {
                 if (hitCollider.CompareTag("Enemy"))
                 {
@@ -123,6 +132,13 @@ public class PlayerController : MonoBehaviour
                     if (enemyHealth != null)
                     {
                         enemyHealth.TakeDamage(baseDamage);
+
+                        // Change the material of the player when hit
+                        if (hitMaterial != null)
+                        {
+                            playerRenderer.material = hitMaterial;
+                            StartCoroutine(ResetMaterialAfterDelay(.75f));
+                        }
                     }
                 }
             }
@@ -132,6 +148,7 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+
     
     //Does a strong hit
     private void OnStrongHit(InputAction.CallbackContext context)
@@ -140,12 +157,14 @@ public class PlayerController : MonoBehaviour
         {
             if (!strongCoolDown)
             {
+                // Clear the array at the beginning
+                Collider[] hitColliders = new Collider[0];
                 // Perform the attack logic here
                 Debug.Log("Strong Attacking!");
 
                 // Check for collisions with objects of the "Enemy" tag - change to just have compare tag?
-                Collider[] hitColliders = Physics.OverlapSphere(transform.position, 2.0f); // You might need to adjust the radius
-                foreach (Collider hitCollider in hitColliders)
+                hitColliders = Physics.OverlapSphere(transform.position, 2.0f); // You might need to adjust the radius
+                foreach (var hitCollider in hitColliders)
                 {
                     if (hitCollider.CompareTag("Enemy"))
                     {
@@ -157,6 +176,12 @@ public class PlayerController : MonoBehaviour
                         if (enemyHealth != null)
                         {
                             enemyHealth.TakeDamage(strongDamage);
+                            // Change the material of the player when hit
+                            if (hitMaterial != null)
+                            {
+                                playerRenderer.material = strongHitMaterial;
+                                StartCoroutine(ResetMaterialAfterDelay(.75f)); // Reset material after 0.5 seconds
+                            }
                             StartCoroutine(StongAttackCoolDOwn(10f));
                         }
                     }
@@ -170,6 +195,15 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+    }
+
+    // Coroutine to reset the material after a delay
+    private IEnumerator ResetMaterialAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Reset the material to the original material or any other desired material
+        playerRenderer.material = originalMaterial; 
     }
 
     //depending on the action, the power up will do something 
@@ -192,6 +226,10 @@ public class PlayerController : MonoBehaviour
                     // Perform actions related to using Fireball power-up
                     numOfPowerUp--;
 
+                    if(fireLaunch == null)
+                    {
+                        Debug.LogError("NULL FOR NO REASON");
+                    }
                     // Call a method or perform logic specific to the Fireball power-up
                     fireLaunch.LaunchFireball();
 
@@ -211,7 +249,7 @@ public class PlayerController : MonoBehaviour
                     vMove.currentSpeed = powerDamage;
 
                     // Start a coroutine to run the power-up effect for a specific duration
-                    StartCoroutine(DeactivatePowerUpAfterDuration(25f));
+                    StartCoroutine(DeactivatePowerUpAfterDuration(10f));
                 }
                 else
                 {
@@ -288,6 +326,12 @@ public class PlayerController : MonoBehaviour
     //end game if the player is dead - need to change to do something to indicate game over
     private void OnDestroy()
     {
-        Debug.Log("Game Over");
+        SceneManager.LoadScene("Lose Screen");
+    }
+
+
+    public Transform playerPostion()
+    {
+        return this.transform;
     }
 }

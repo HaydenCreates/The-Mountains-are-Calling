@@ -34,6 +34,7 @@ public class DatabaseManager : MonoBehaviour
        userInstance = EmailPasswordManager.Instance;
        userID = userInstance.userID;
        Instance = this;
+        DontDestroyOnLoad(this);
     }
 
     //saves the data to a firebase json
@@ -41,6 +42,24 @@ public class DatabaseManager : MonoBehaviour
     {
         // Update dts with level data before serialization
         dts.levels = gameManager.levels;
+        dts.collectable = gameManager.collectableCnt;
+
+        // Now serialize the updated dts object
+        string json = JsonUtility.ToJson(dts);
+
+        // Save the JSON string to Firebase
+        reference.Child("users").Child(userID).SetRawJsonValueAsync(json);
+    }
+
+    //save a defualt save
+    public void SaveDefualtDataFn()
+    {
+        dts.levels = new List<Level>()
+        {
+            new Level() { levelName = "Demo_Level", isCompleted = true },
+            new Level() { levelName = "Level_2", isCompleted = false },
+        };
+        // Update dts with level data before serialization
         dts.collectable = gameManager.collectableCnt;
 
         // Now serialize the updated dts object
@@ -77,10 +96,12 @@ public class DatabaseManager : MonoBehaviour
         else
         {
             print("No data found");
+            SaveDefualtDataFn();
+            LoadDataFn();
         }
 
     }
-
+    
     private void OnApplicationQuit()
     {
         FirebaseAuth.DefaultInstance.SignOut();
